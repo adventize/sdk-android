@@ -41,7 +41,7 @@ To pass the integration you should make 3 sessions. The best way is to launch an
 
 ## Publisher integration
 
-Download PublisherSDK — [adventize-publisher-android-sdk.tar.gz](https://github.com/adventize/sdk-ios/raw/master/adventize-publisher-android-sdk.tar.gz).
+Download PublisherSDK — [adventize-publisher-android-sdk.tar.gz](https://github.com/adventize/sdk-android/raw/master/adventize-publisher-android-sdk.tar.gz).
 
 Archive with PublisherSDK also contains `ExamplePublisher` project for Intellij IDEA and `SDK_pub` directory. SDK directory contains JAR library with SDK and `res.zip` — archive with files needed for publisher's offerwall.
 
