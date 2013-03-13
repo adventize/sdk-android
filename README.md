@@ -28,11 +28,11 @@ To integrate AdventizerSDK in your app make following steps:
 
 4. Start adventize session in your main class, when your application starts:
 
-		Advertizer.startSession(this, "{Your appId}", "{Your secret}");
+		Advertizer.startSession(this, "Your appId", "Your secret");
 		
 	`appId` and `secret` you may find in details section of your app on Adventize.com
 
-6. Stop adventize session before your application will terminate:
+6. Stop adventize session before your application will terminate. It is recommended to use `finish()` function.
 
 		Advertizer.stopSession();
 
@@ -69,9 +69,9 @@ To integrate PublisherSDK in your app follow these steps:
 5. Call offerwall window with your appId and your application Context:
 
 		startActivity(AdventizePublisher
-            .getOfferwall("your secret", getApplicationContext()));
+            .getOfferwall("Your appId", getApplicationContext()));
 
-6. Stop ad session before your application will terminate:
+6. Stop ad session before your application will terminate. It is recommended to use `finish()` function.
 
 	    AdventizePublisher.stopSession();
 
