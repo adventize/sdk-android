@@ -51,29 +51,79 @@ To integrate PublisherSDK in your app follow these steps:
 2. Add these permissions to your `AndroidManifest.xml`:
 
     	...
-	    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     	<uses-permission android:name="android.permission.INTERNET"/>
-	    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-	    ...
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+	...
 
 3. Add Adventize activity to your <application> in AndroidManifest.xml:
 
-		<activity android:name="com.adventize.publisher.main.MainActivity"
-    		android:label="@string/Offerwall"/>
+	<activity android:name="com.adventize.publisher.main.MainActivity"
+	android:label="@string/Offerwall"/>
 
 4. Import main SDK class in class, where you want to show ad offerwall:
 
-    	import com.adventize.publisher.main.AdventizePublisher;
+    	import com.adventize.publisher.main.Publisher;
 
-5. Call offerwall window with your appId and your application Context:
+5. Call offerwall window with your appId and your application Activity:
 
-		startActivity(AdventizePublisher
-            .getOfferwall("Your appId", getApplicationContext()));
+	Publisher.callOfferwall("Your appId",this);
 
 6. Stop ad session before your application will terminate. It is recommended to use `finish()` function.
 
-	    AdventizePublisher.stopSession();
+	Publisher.stopSession();
+
+You can use adventize prefetch mechanizm to show fetch only when it is ready.</p>
+To do so, use these steps:
+
+1. Add <code>libPublisherSDK.jar</code> to your project;
+2. Add these permissions to your <code>AndroidManifest.xml:
+	...
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>;
+	<uses-permission android:name="android.permission.INTERNET"/>;
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>;
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>;
+	...
+3. add Adventize activity to your <application> in AndroidManifest.xml:
+
+	<activity android:name="com.adventize.publisher.main.MainActivity"
+	android:label="@string/Offerwall"/>
+
+4. Import main SDK class in your mian class:
+	import com.adventize.publisher.main.Publisher;</code></pre>
+	
+5.Report about starting session when you start your app:
+
+	Publisher.startSession(getApplicationContext());
+
+6. Import SDK callback interface in class, where you want to get callbacks
+
+	import com.adventize.publisher.publisher.AskFetchCallback;
+
+7. Implement AskFetchCallback interface:
+	public class myObj implements AskFetchCallback
+
+8. Import main SDK class in class, where you want to show ad offerwall:
+
+	import com.adventize.publisher.main.Publisher;
+
+9. Use askFetch(AskFetchCallback obj, String appId, Activity context) to ask for prefetch.
+
+	Publisher.askFetch(this, "Your appId", this);
+	
+10. implement fetchFinished to callOfferwall when ok is true:
+
+	public void fetchFinished(boolean ok) {
+        if(ok)
+        {
+            Publisher.callOfferwall("Your appId",this);
+	}
+}
+
+11. Stop ad session before your application will terminate. It is recommended to use finish() function.
+
+	Publisher.stopSession();
 
 To pass the integration you should make 3 ad fetches. Just ask for fetch 3 times. Do not warry if the fetch will be empty. It is so because your app is not integrated and under moderation.
 
