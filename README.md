@@ -1,91 +1,156 @@
-# Adventize Android SDK integration
+#Adventize Android SDK integration
 
-There are two types of SDK: AdvertiserSDK and PublisherSDK. The difference is that AdvertiserSDK contains only Advertiser's capabilities while PublisherSDK is the full SDK, containing both Publisher and Advertiser.
+There are two types of SDK: `AdvertiserSDK` and `PublisherSDK`. The difference is that AdvertiserSDK contains only Advertiser's capabilities while PublisherSDK is the full SDK, containing both Publisher and Advertiser.
 
+AdvertiserSDK helps us to understand when our client launches your application, so you pay only for the successful launch. Publishers SDK besides all above also allows you to integrate our offerwall into your application.
+##Advertiser integration
 
-## Advertiser integration
+Download Advertiser SDK — `adventize-advertiser-android-sdk.zip`.
 
-Download Advertiser SDK [adventize-advertiser-android-sdk.zip](https://github.com/adventize/sdk-android/raw/master/adventize-advertiser-android-sdk.zip).
-
-Archive with AdventizerSDK contains `ExampleAdvertiser` project directory with all needed JAR libraries: libAdvertiserSDK and libGoogleAnalyticsV2, source file, where SDK is used and default resources.
+Archive with AdventiserSDK contains `ExampleAdvertiser` project and `SDK_adv`  directory with `libAdvertiserSDK` JAR library and `deps` — dependencies directory with other JAR libraries.
 
 To integrate AdventizerSDK in your app make following steps:
 
-1. Add `libAdvertizeSDK.jar` to your project;
+1. Add `libAdvertizeSDK.jar` to your project. Also add libs from `SDK_adv/deps` if you don't have them yet.
 2. Add these permissions to your `AndroidManifest.xml`:
 
         ...
-	    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-	    <uses-permission android:name="android.permission.INTERNET"/>
-	    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-	    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-	    ...
+        <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+        ...
 
-3. Import advertiser's class in your main class:
+3. Import advertizer's class in your main class:
 
-		import com.adventize.advertiser.Advertiser;
+        import com.adventize.advertiser.Advertiser;
 
-4. Start adventize session in your main class, when your application starts:
+4. Start advertizer's session in your main class, when your application starts, passing Activity, id of your app in our system and your secret code, which you get on manager dashboard:
 
-		Advertiser.startSession(this, "Your appId", "Your secret");
-		
-	`appId` and `secret` you may find in details section of your app on Adventize.com
+        Advertiser.startSession(this, "Your appId", "Your secret");
 
-6. Stop adventize session before your application will terminate. It is recommended to use `finish()` function.
+5. Stop advertizer's session before your application will terminate. It is recommended to use finish() function.
 
-		Advertiser.stopSession();
+        Advertiser.stopSession();
 
 To pass the integration you should make 3 sessions. The best way is to launch and close your application for 3 times.
+##Publisher integration
+###Basic integration
 
+Download PublisherSDK — `adventize-publisher-android-sdk.zip`.
 
-## Publisher integration
-
-Download Publisher SDK [adventize-publisher-android-sdk.zip](https://github.com/adventize/sdk-android/raw/master/adventize-publisher-android-sdk.zip).
-
-Archive with PublisherSDK contains `ExamplePublisher` project and adventize-sdk-module, where SDK is integrated, including all needed libs and resources.
+Archive with PublisherSDK contains `ExamplePublisher` project and `SDK_pub` directory. SDK directory contains adventize jar library and `deps` - dependencies directory.
 
 To integrate PublisherSDK in your app follow these steps:
 
-1. Create module `adventize-sdk-module`based on it's directory;
-2. Add dependepcy of adventize-sdk-module in your main application module
+1. Add `libPublisherSDK.jar` to your project dependencies. Also add libs from `SDK_pub/deps` if you don't have them yet
+2. Add these permissions to your AndroidManifest.xml:
 
-3. Add these permissions to your `AndroidManifest.xml`:
+        ...
+        <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+        <uses-permission android:name="android.permission.INTERNET"/>
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+        ...
 
-    	...
-	    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    	<uses-permission android:name="android.permission.INTERNET"/>
-	    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-	    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-	    ...
+3. Import Publisher class and banner's callback interface in class, where you want to call banners.
 
-3. Add Adventize activity & openUdid service to your <application> in AndroidManifest.xml:
+        import com.adventize.main.Publisher;
+        import com.adventize.main.AskBannerCallback;
 
-	    <service android:name="com.adventize.openUdid.Adv_OpenUDID">
-            <intent-filter>
-                <action android:name="org.openudid.GETUDID" />
-            </intent-filter>
-        </service>
+4. Use this to initialise sdk with your `appId` on start (before calling ad!):
 
-        <activity android:name="com.adventize.gui.MainActivity" android:label="@string/Offerwall" android:launchMode="singleTask"/>
+        Publisher.startSession(getApplicationContext(), "Your appId"); 
 
-4. Import main SDK class in class, where you want to show ad offerwall:
+5. Stop ad session before your application will terminate. It is recommended to use finish() function.
 
-    	import import com.adventize.utils.AdventizeSDK;
+        Publisher.stopSession();
 
-5. Start publisher session when your application starts, setting appId of your application:
+###Banner integration
 
-	    AdventizeSDK.startSession(getApplicationContext(), "Your appId");	    
+1. Import banner's callback interface in class, where you want to initiate banners downloading:
 
-6. Call offerwall window, sending your activity as a param:
+        import com.adventize.main.AskBannerCallback;
 
-	    AdventizeSDK.showOfferWallWindow(this);
+2. Implement banner's callback interface in this class:
 
-6. Stop ad session before your application will terminate. It is recommended to use `finish()` function.
+        public class YourClass implements AskBannerCallback ...
 
-	    AdventizeSDK.stopSession();
+3. Call askBanners function, passing AskBannerCallback, Activity and String locations, that you mention in your dashboard.
 
-To pass the integration you should make 3 ad fetches. Just ask for fetch 3 times. Do not warry if the fetch will be empty. It is so because your app is not integrated and under moderation.
+        Publisher.askBanners(this, this, "banner1", "banner2");
 
-## Both publisher and advertizer
+4. Implement onBannersLoaded callback in your AskBannerCallback implementation. In this method you get a list of banners, which can be empty or null, if no banners exists.
 
-To integrate both publisher and advertizer capabilities in one app you should use PublisherSDK. Follow publisher's instructions to integrate publisher and advertizer's instructions from 3 till last items to integrate advertizer.
+        @Override
+        public void onBannersLoaded(@Nonnull final List banners) {
+        }
+5. Use banners as normal WebViews. F.e. you can attach them to simple Dialog with LinearLayout:
+
+        <?xml version="1.0" encoding="utf-8"?>
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:focusableInTouchMode="false"
+            android:id="@+id/bannerLayout"
+            android:layout_width="200dp"
+            android:layout_height="200dp"/>
+6. Use banner's close listener to make close call when banner is closing, if you want.
+To use close listener first import it in class, where you implement AskBannerCallback:
+    
+	    import com.adventize.banner.CloseListener;
+And then use this example in onBannersLoaded to show banner in Dialog and to add CloseListener to it:
+
+	    if (banners.isEmpty()) {
+        return;
+        }
+        final Banner banner = banners.get(0);
+        bannerDialog = new Dialog(this) {
+        @Override
+        protected void onCreate(final Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            this.setContentView(R.layout.banner_dialog);
+            banner.setCloseListener(new CloseListener() {
+                @Override
+                public void onCloseBanner(final Banner banner) {
+                    dismiss();
+                }
+            });
+            ViewGroup l = (ViewGroup) findViewById(R.id.bannerLayout);
+            l.addView(banner, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
+        };
+        bannerDialog.show();
+
+To pass the integration you should make 3 ad requests. Just ask for banner 3 times. Do not worry if the banner will be empty. It is so because your app is not integrated and under moderation.
+
+###Adding banner's custom callbacks.
+If you want to specify custom callbacks on banner's actions do following:
+
+1. Import CustomCallback class in class, where you want to keep callbacks
+
+        import com.adventize.banner.CustomCallback;
+2. Create CustomCallback object and save it as varaible. Create new Callable object and override `call` method. In this method you can place your code, which will be called, if banner makes mathching action.
+
+        callback = new CustomCallback(new Callable&lt;Void&gt;() {
+            @Override
+            public Void call() throws Exception {
+                exampleCustomCallback(callback);
+                return null;
+            }
+        });
+3. Add created callback to SDK, passing action name and callback. Action name is the name of banner's matching action for this callback.
+
+        Publisher.addCallback("goToShop", callback);
+4. You can get some params from callback. But first you should check if params are not null.
+
+        Map<String, String> params = self.getParams();
+        if(params != null)
+            Log.d("Example","got callback with params : " + params.toString());
+        else
+            Log.d("Example","got callback without params.");
+
+Note, that you can add multiple callbacks with different names.
+##Both publisher and advertizer
+
+To integrate both publisher and advertizer capabilities in one app you should use PublisherSDK. Follow publisher's instructions to integrate publisher and advertizer's instructions from 4 till last items to integrate advertizer. Use `Advertiser.startSession(this, "Your appId", "Your secret");` instead `Publisher.startSession(getApplicationContext(), "Your appId");` Use stop session of advertiser also.
